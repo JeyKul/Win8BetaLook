@@ -25,3 +25,17 @@ rectangle l,t,r,b in the first STREAM atlas).
 
 Taskbar/Start: Win11's taskbar and Start are XAML and ignore msstyles. 8250's
 TaskBar*/StartMenu* classes only matter with the Win10 taskbar back (e.g. ExplorerPatcher).
+
+## Part 0 / prop 213: the atlas reference
+
+Part 0 is a single record, prop 213 type 213, and its 6th header field is not a
+"short value" flag: it is the STREAM id of the class's atlas (994 in 8250, 1448 in
+26200). Taking the donor's part 0 made uxtheme fail with
+ERROR_RESOURCE_NAME_NOT_FOUND (0x...0716). The build keeps the target's part 0 and
+puts the donor atlas in under the target's id. Found by bisecting the parts
+(`vmsetup/trystyle.sh <name> <parts>`).
+
+## Result (2026-11-18)
+
+Win11 26200 with the 8250 DWMWindow records + atlas loads (SetSystemVisualStyle
+hr=0): caption buttons are 8250's (framed min/max, red glass close, inactive state).

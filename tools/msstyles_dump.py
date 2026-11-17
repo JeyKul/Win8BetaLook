@@ -4,7 +4,8 @@
 Usage: msstyles_dump.py <file.msstyles> [VARIANT name, default NORMAL] > table.tsv
 Output columns: class  part  state  property-id  type-id  size
 Classes come from CMAP (UTF-16, index = class id); records from VARIANT/<name>:
-8 x int32 header (name, type, class, part, state, short-flag, reserved, size),
+8 x int32 header (name, type, class, part, state, short-flag, reserved, size;
+for prop 213 the short-flag field holds the atlas STREAM id),
 then the value (inline in the header's size field when short-flag is set,
 otherwise `size` bytes padded to 8).
 """
