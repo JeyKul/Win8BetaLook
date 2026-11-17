@@ -1,0 +1,13 @@
+# Microsoft files never go into the repo
+*.iso
+*.wim
+*.esd
+*.msstyles
+*.mui
+*.dll
+*.exe
+work/
+vm/
+tools/pydeps/
+__pycache__/
+vmsetup/dl/
