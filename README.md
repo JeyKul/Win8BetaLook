@@ -65,6 +65,27 @@ account `test`/`test` with autologon, OpenSSH server. Packed with
 and attached as a second CD next to the Windows ISO. The product key in it is
 Microsoft's public generic install key: it installs but does not activate.
 
+## Credits
+
+Projects this one uses or builds on:
+
+- **[Keel](https://github.com/bulutthecat/KeelPublic)** by bulutthecat (GPL-3.0): the
+  idea and method for Phase B, running an older Windows' real DWM, theme engine and
+  shell on a newer kernel.
+- **[msstyleEditor](https://github.com/nptr/msstyleEditor)** by nptr (MIT): editing and
+  rebuilding the visual style; its reading of the msstyles format guided `msstyles_dump.py`.
+- **[SecureUxTheme](https://github.com/namazso/SecureUxTheme)** by namazso (LGPL-2.1):
+  loading unsigned visual styles without patching system files.
+- **[pefile](https://github.com/erocarrera/pefile)** by Ero Carrera (MIT): PE resource
+  parsing in the dump tool.
+- **[wimlib](https://wimlib.net)** (GPL-3.0/LGPL-3.0) and **[7-Zip](https://7-zip.org)**
+  (LGPL-2.1): reading the ISOs and WIM images.
+- **[QEMU](https://www.qemu.org)/[libvirt](https://libvirt.org)** and
+  **[EDK2 OVMF](https://github.com/tianocore/edk2)**: the test VM.
+
+Windows, its visual styles and the Windows 8 beta artwork belong to Microsoft. This
+repository contains none of their files.
+
 ## License
 
 GPL-3.0 (see `LICENSE`), so code from Keel can be reused in Phase B.
