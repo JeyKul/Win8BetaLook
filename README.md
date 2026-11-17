@@ -30,12 +30,15 @@ host, Win7 SP1 donor), so all of them would have to be regenerated for 8250 and
 
 ## Status
 
-| Step | State |
-|---|---|
-| Target (26200.6584) msstyles extracted and dumped: 9449 records, 342 classes | ✅ |
-| Dump/diff tools | ✅ |
-| Test VM (Win11 25H2 Pro for Workstations, unattended) | in progress |
-| 8250 ISO | waiting for the download |
+| Checklist item | State | How |
+|---|---|---|
+| Caption buttons | ✅ | 8250's DWMWindow records + atlas, renumbered (`docs/dwmwindow-mapping.md`) |
+| Window frame, glass | ✅ (no blur without a GPU) | [OpenGlass](https://github.com/ALTaleX531/OpenGlass) drawing from the active style's atlas, settings in `tools/openglass_win8.ps1` |
+| Taskbar | 🟡 | 8250's TaskBar/TaskBand2/TrayNotify classes are in (Windows 10 taskbar via ExplorerPatcher, Windows mode dark), but that taskbar paints its own flat background |
+| Start button | ⬜ | |
+
+Target 26200.6584 and donor 8250 use the same msstyles container; the differences
+are in part numbering and resource references (see `docs/`).
 
 ## Tools
 
@@ -49,6 +52,9 @@ tools/extract_theme.sh 8250.iso . work/8250
 
 tools/msstyles_dump.py <file.msstyles>            # class, part, state, property, type, size
 tools/msstyles_diff.py work/8250/aero.tsv work/win11/aero.tsv '^(Window|DWMWindow|TaskBar)'
+tools/build_style.py <8250 aero.msstyles> <26200 aero.msstyles> <out> DWMWindow '^TaskBar$' ...
+    # VARIANT blob + images for the chosen classes; apply_resources.ps1 writes them on Windows
+vmsetup/build_and_install.sh                     # build Win8Beta.msstyles, install and apply it in the VM
 ```
 
 msstyles layout as read by the dump: `CMAP` holds the class names (UTF-16, each
@@ -76,6 +82,12 @@ Projects this one uses or builds on:
   rebuilding the visual style; its reading of the msstyles format guided `msstyles_dump.py`.
 - **[SecureUxTheme](https://github.com/namazso/SecureUxTheme)** by namazso (LGPL-2.1):
   loading unsigned visual styles without patching system files.
+- **[OpenGlass](https://github.com/ALTaleX531/OpenGlass)** by ALTaleX531 (GPL-3.0): glass
+  window frames on Windows 11, drawn from the active visual style.
+- **[ExplorerPatcher](https://github.com/valinet/ExplorerPatcher)** by valinet (GPL-2.0): the
+  Windows 10 taskbar on Windows 11, which reads the TaskBar classes of the style.
+- **[ThemeToolSharp](https://github.com/namazso/ThemeToolSharp)** by namazso (LGPL-2.1): the
+  way `set_visual_style.ps1` applies a style (uxtheme's SetSystemVisualStyle).
 - **[pefile](https://github.com/erocarrera/pefile)** by Ero Carrera (MIT): PE resource
   parsing in the dump tool.
 - **[wimlib](https://wimlib.net)** (GPL-3.0/LGPL-3.0) and **[7-Zip](https://7-zip.org)**
