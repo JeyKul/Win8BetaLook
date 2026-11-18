@@ -8,7 +8,8 @@
 // @homepage        https://github.com/JeyKul/Win8BetaLook
 // @license         GPL-3.0
 // @include         explorer.exe
-// @compilerOptions -luxtheme -ldwmapi -lgdi32
+// @architecture    x86-64
+// @compilerOptions -luxtheme -ldwmapi -lgdi32 -lcomctl32
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==
