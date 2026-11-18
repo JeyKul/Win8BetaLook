@@ -11,3 +11,4 @@ vm/
 tools/pydeps/
 __pycache__/
 vmsetup/dl/
+dist/
