@@ -4,6 +4,8 @@
 Usage: build_style.py <donor aero.msstyles> <target aero.msstyles> <out dir> <class>...
   <class> is a class name both files have (taken over 1:1), or DWMWindow (renumbered,
   see docs/dwmwindow-mapping.md). A class name may be a regex: '^TaskBar' etc.
+  'Donor=Target' takes the donor class's records into a different target class
+  (e.g. 'TaskBarComposited::TaskBar=TaskBar': 8250's glass taskbar as the plain one).
 Writes <out>/VARIANT_NORMAL.bin, <out>/STREAM_<id>.png (DWMWindow atlas) and
 <out>/IMAGE_<id>.png for every donor image the taken classes use (new ids after the
 target's highest). Apply in the VM with tools/apply_resources.ps1.
@@ -42,8 +44,16 @@ def main():
     dused = {dnames[h[2]] for h, _ in dblob}
     tused = {tnames[h[2]] for h, _ in tblob}
 
-    take = set()
+    take, renamed = set(), {}
     for w in wanted:
+        if "=" in w:
+            d, t = w.split("=", 1)
+            if d not in dused or t not in tused:
+                print(f"FAIL {w}: {d} not in donor or {t} not in target")
+                continue
+            renamed[t] = d
+            take.add(t)
+            continue
         hits = {c for c in dused & tused if c == w or re.search(w, c)}
         if not hits:
             print(f"FAIL {w}: no class with that name in both files")
@@ -70,7 +80,7 @@ def main():
 
     new_blocks = {}
     for c in sorted(take):
-        dcls, tcls = dnames.index(c), tnames.index(c)
+        dcls, tcls = dnames.index(renamed.get(c, c)), tnames.index(c)
         drecs = [raw for h, raw in dblob if h[2] == dcls]
         if c == "DWMWindow":
             by_part, own = {}, {}
@@ -92,7 +102,7 @@ def main():
         else:
             block = [convert(raw, tcls, struct.unpack_from("<i", raw, 12)[0]) for raw in drecs]
         new_blocks[tcls] = block
-        print(f"PASS {c}: {len(block)} records")
+        print(f"PASS {c}: {len(block)} records" + (f" from {renamed[c]}" if c in renamed else ""))
 
     # Each taken class's records go where the target's first record of it was
     out_blob, done = bytearray(), set()
